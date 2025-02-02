@@ -1,0 +1,14 @@
+<% if(success && success.length) { %> <!-- if success exist and the length of success also greater than 0 then only it prints otherwise blan k alert will not be display -->
+    <div class="alert alert-success alert-dismissible fade show col-6 offset-3 mt-2 mb-0" role="alert"> 
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> <!-- The use of this button is whenever u click on the 'X' button then the alert will be disappear -->
+    </div>
+<% } %>
+
+
+<% if(error && error.length) { %> <!-- if error exist and the length of error also greater than 0 then only it prints otherwise blank alert will not be display -->
+    <div class="alert alert-danger alert-dismissible fade show col-6 offset-3 mt-2 mb-0" role="alert"> 
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> <!-- The use of this button is whenever u click on the 'X' button then the alert will be disappear -->
+    </div>
+<% } %>

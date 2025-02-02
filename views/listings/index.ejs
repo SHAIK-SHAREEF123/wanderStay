@@ -1,0 +1,183 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  #filters{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter{
+    text-align: center;
+    margin-right: 2rem;
+    margin-top: 2rem;
+    opacity: 0.7;
+  }
+
+  .filter:hover{
+    opacity: 1;
+    cursor: pointer;
+  }
+
+  .filter p{
+    font-size: 0.8rem;
+  }
+
+  .tax-info{
+    display: none;
+  }
+
+  .tax-toggle{
+    border: 1px solid black ;
+    border-radius: 1rem;
+    height: 3rem;
+    padding: 0.75rem;
+    margin-left: 9rem;
+    display: flex;
+    align-items: center;
+  }
+</style>
+
+<div id="filters">
+  <div class="filter">
+    <div><i class="fa-solid fa-bed"></i></div>
+    <p>Rooms</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-mountain-city"></i></div>
+    <p>Iconic cities</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-mountain"></i></div>
+    <p>Mountains</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-brands fa-fort-awesome"></i></div>
+    <p>Castles</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-person-swimming"></i></div>
+    <p>Amazing pools</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-tents"></i></div>
+    <p>Camping</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-cow"></i></div>
+    <p>Farms</p>
+  </div>
+  <div class="filter">
+    <div><i class="fa-solid fa-snowflake"></i></div>
+    <p>Arctic</p>
+  </div>
+  <div class="filter" >
+    <div><i class="fa-solid fa-ship"></i></div>
+    <p>Boats</p>
+  </div>
+
+  <div class="tax-toggle">
+    <div class="form-check-reverse form-switch">
+      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+      <label class="form-check-label" for="flexSwitchCheckDefault">Display total after taxes</label>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3" id="listingsContainer">
+  <% for(let listing of allListings) { %>
+  <a href="/listings/<%= listing._id %>" class="listing-link">
+    <div class="card col listing-card">
+      <img
+        src="<%= listing.image.url %>"
+        class="card-img-top"
+        style="height: 20rem"
+        alt="listing_image"
+      />
+      <div class="card-img-overlay"></div>
+      <div class="card-body">
+        <p class="card-text">
+          <b><%= listing.title %></b><br />
+          &#8377;<%= listing.price.toLocaleString("en-IN") %>/Night
+          <i class="tax-info">&nbsp; &nbsp; +18% GST</i>
+        </p>
+      </div>
+    </div>
+  </a>
+
+  <% } %>
+</div>
+
+<script>
+  // Mock `listings` data (replace this with the actual data passed from the server)
+  const listings = <%- JSON.stringify(allListings) %>;
+
+  // Handle category filter clicks
+  let icons = document.getElementsByClassName("filter");
+
+  for (let icon of icons) {
+    icon.addEventListener("click", () => {
+      for (let otherIcon of icons) {
+      otherIcon.style.opacity = 0.7; // Reset to default opacity
+      otherIcon.style.textDecoration = "none";
+    }
+    // Highlight the clicked icon
+    icon.style.opacity = 1;
+    icon.style.textDecoration = "underline";
+      // Extract category name from the <p> tag
+      let category = icon.querySelector("p").textContent.trim();
+
+      // Get the container for listings
+      let listingsContainer = document.getElementById("listingsContainer");
+      listingsContainer.innerHTML = ""; // Clear current listings
+
+      // Filter and display listings based on the category
+      for (let listing of listings) {
+        if (listing.category.toLowerCase() === category.toLowerCase()) {
+          let listingHTML = `
+            <a href="/listings/${listing._id}" class="listing-link">
+              <div class="card col listing-card">
+                <img
+                  src="${listing.image.url}"
+                  class="card-img-top"
+                  style="height: 20rem"
+                  alt="listing_image"
+                />
+                <div class="card-img-overlay"></div>
+                <div class="card-body">
+                  <p class="card-text">
+                    <b>${listing.title}</b><br />
+                    ₹${listing.price.toLocaleString("en-IN")}/Night
+                    <i class="tax-info">&nbsp; &nbsp; +18% GST</i>
+                  </p>
+                </div>
+              </div>
+            </a>
+          `;
+          listingsContainer.innerHTML += listingHTML;
+        }
+      }
+
+      // If no listings match, show a message
+      if (listingsContainer.innerHTML === "") {
+        listingsContainer.innerHTML = "<p>No listings available for this category.</p>";
+      }
+    });
+  }
+
+  // Tax switch toggle functionality
+  let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+  taxSwitch.addEventListener("click", () => {
+    let taxInfo = document.getElementsByClassName("tax-info");
+    for (let info of taxInfo) {
+      if (info.style.display !== "inline") {
+        info.style.display = "inline";
+      } else {
+        info.style.display = "none";
+      }
+    }
+  });
+
+</script>
